@@ -1,4 +1,3 @@
-
 from exts import db
 from flask import Blueprint, request, Response, jsonify, render_template, url_for, redirect, session
 import json
@@ -27,10 +26,6 @@ def login():
         content = {"code": 1, "msg": "用户数据错误"}
     return json.dumps(content)
 
-@user.route('/login2', methods=['GET'])  # 抖音账号列表
-def login2():
-    content = {"code": 1, "msg": "用户数据错误"}
-    return json.dumps(content)
 
 @user.route('/register', methods=['POST'])
 def register():

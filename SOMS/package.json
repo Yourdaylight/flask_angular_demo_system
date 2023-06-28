@@ -3,9 +3,9 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "set NODE_OPTIONS=--openssl-legacy-provider & ng",
-    "start":"set NODE_OPTIONS=--openssl-legacy-provider & ng serve",
-    "build":"set NODE_OPTIONS=--openssl-legacy-provider & ng build",
-    "test":"set NODE_OPTIONS=--openssl-legacy-provider & ng test",
+    "start": "set NODE_OPTIONS=--openssl-legacy-provider & ng serve",
+    "build": "set NODE_OPTIONS=--openssl-legacy-provider & ng build",
+    "test": "set NODE_OPTIONS=--openssl-legacy-provider & ng test",
     "lint": "set NODE_OPTIONS=--openssl-legacy-provider & ng lint",
     "e2e": "set NODE_OPTIONS=--openssl-legacy-provider & ng e2e"
   },

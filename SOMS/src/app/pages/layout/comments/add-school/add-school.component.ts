@@ -14,6 +14,8 @@ import { StorageService } from 'src/app/services/storage.service';
 })
 export class AddSchoolComponent implements OnInit {
   userForm: FormGroup ;
+  editData: any;
+  isEdit: boolean; // 接收传递的标识
   constructor(
     private fb: FormBuilder,
     private nzModalService: NzModalService,
@@ -26,19 +28,26 @@ export class AddSchoolComponent implements OnInit {
 
   ngOnInit(): void {
     this.userForm = this.fb.group({
-      title: ['', [Validators.required]],
-      number: ['', [Validators.required]],
-      desc: [''],
-      score: ['', [Validators.required]],
-      end_time: [''],
+      title: [this.editData.title, [Validators.required]], // 初始化编辑数据到表单
+      number: [this.editData.number, [Validators.required]],
+      desc: [this.editData.desc],
+      teacher: [this.editData.teacher, [Validators.required]],
+      sex: [this.editData.sex, [Validators.required]],
+      contact: [this.editData.contact, [Validators.required]],
+      end_time: [this.editData.end_time],
 
     });
   }
   submitUser(){
     this.userForm.markAllAsTouched();
-    if (!this.userForm.valid) {return;}
+    //if (!this.userForm.valid) {return;}
     let params = this.userForm.value;
-    this.apiService.post( 'addSchool', params ).subscribe((res: any) => {
+    let url = 'addSchool';
+    if (this.isEdit) {
+      url = 'updateSchool';
+      params.id = this.editData.id;
+    }
+    this.apiService.post( url, params ).subscribe((res: any) => {
       console.log(res);
       const { code, msg } = res;
       if (code === 0) {

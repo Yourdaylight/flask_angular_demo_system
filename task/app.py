@@ -1,4 +1,4 @@
-from flask import Flask, render_template,send_from_directory
+from flask import Flask, render_template, send_from_directory
 from flask_cors import CORS
 import os
 # 引用数据库配置文件
@@ -25,9 +25,10 @@ app.config["SECRET_KEY"] = 'TPmi4aLWRbyVq8zu9v82dWYW1'
 migrate = Migrate(app, db)
 
 
-@app.route('/ttt',methods=['GET'])
+@app.route('/ttt', methods=['GET'])
 def index():
     return render_template("add.html")
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

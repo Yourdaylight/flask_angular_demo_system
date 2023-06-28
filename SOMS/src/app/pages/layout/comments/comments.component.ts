@@ -20,7 +20,7 @@ export class CommentsComponent implements OnInit {
   total = 1;
   loading: boolean;
   name: string = '';
-  start_score: number;
+  classNum: number;
   end_score: number;
   role:number;
   constructor(
@@ -71,17 +71,17 @@ export class CommentsComponent implements OnInit {
     this.navigateService.navigate('layout/teacher', data);
   }
   searchUser() {
-    let url = `schoolList?name=${this.name}&start_score=${this.start_score || ''}&end_score=${this.end_score || ''}`
+    let url = `schoolList?name=${this.name}&start_score=${this.classNum || ''}&end_score=${this.end_score || ''}`
     this.loadSchool(url);
   }
   clearField() {
     this.name = '';
-    this.start_score = null;
+    this.classNum = null;
     this.end_score = null;
     this.loadSchool();
   }
   addUser() {
-    let title = '添加学校';
+    let title = '添加学生信息';
     const modal = this.nzModalService.create({
       nzTitle: this.translateService.instant(title),
       nzContent: AddSchoolComponent,
@@ -94,6 +94,19 @@ export class CommentsComponent implements OnInit {
       }
     })
   }
+  // 在上个界面的组件中
+toEdit(data: any): void {
+  const modal = this.nzModalService.create({
+    nzTitle: '编辑数据',
+    nzContent: AddSchoolComponent, // 当前界面的组件
+    nzComponentParams: {
+      editData: data, // 传递编辑的数据
+      isEdit: true // 是否是编辑
+    },
+    nzFooter: null
+  });
+}
+
   toDelete(item) {
     this.apiService.post('removeSchool', { id: item.id }).subscribe((res: any) => {
       console.log(res);
