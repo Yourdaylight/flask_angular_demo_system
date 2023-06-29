@@ -4,15 +4,14 @@
     <div class="sidebar-logo">
       <a>
         <img src="assets/img/network-icon.png" alt="logo">
-        <h1>学生信息管理系统</h1>
+        <h1>来看看论坛系统</h1>
       </a>
     </div>
     <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
       <li nz-menu-item nzMatchRouter>
         <i nz-icon nzType="mail"></i>
-        <span [routerLink]="['./comments']">{{'学生列表' }}</span>
+        <span [routerLink]="['./comments']">{{'最新动态' }}</span>
       </li>
-      
     </ul>
   </nz-sider>
   <nz-layout>
@@ -38,6 +37,6 @@
         <router-outlet></router-outlet>
       </div>
     </nz-content>
-    <nz-footer>©版本1.0</nz-footer>
+    <nz-footer>©Copyright 2023 来看看论坛</nz-footer>
   </nz-layout>
 </nz-layout>

@@ -1,7 +1,7 @@
 <div class="login-wrap">
   <canvas id="bgLogin"></canvas>
   <div class="login-card">
-    <h3>{{'学生信息管理系统📕'}}</h3>
+    <h3>{{'🏂来看看论坛系统'}}</h3>
     <form nz-form [formGroup]="validateForm" (ngSubmit)="submitForm()">
       <nz-form-item>
         <nz-form-control [nzErrorTip]="translateService.instant('SYSTEM_VALIDATE_REQUIRE_USERNAME')">
@@ -25,7 +25,7 @@
         </nz-form-control>
       </nz-form-item>
       <div class="text-center">
-          <a (click)="toReg()">{{'注册' |translate}}</a>
+          <a (click)="toReg()">{{'没有账号？立即注册'}}</a>
       </div>
     </form>
   </div>

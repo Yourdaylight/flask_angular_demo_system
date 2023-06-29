@@ -16,18 +16,21 @@ export class AddSchoolComponent implements OnInit {
   userForm: FormGroup ;
   editData: any;
   isEdit: boolean; // 接收传递的标识
+  currentUser: any;
   constructor(
     private fb: FormBuilder,
     private nzModalService: NzModalService,
     private apiService: ApiService,
-    private storageService: StorageService,
+    public storageService: StorageService,
     private modalRef: NzModalRef,
     private $message: NzMessageService,
     private navigateService: NavigateService
   ) { }
 
   ngOnInit(): void {
+    this.currentUser = this.storageService.getItem('username');
     if(this.isEdit){
+      this.currentUser = this.editData.title;
       this.userForm = this.fb.group({
       title: [this.editData.title, [Validators.required]], // 初始化编辑数据到表单
       number: [this.editData.number, [Validators.required]],
@@ -39,7 +42,7 @@ export class AddSchoolComponent implements OnInit {
     });
     }else {
       this.userForm = this.fb.group({
-      title: [null, [Validators.required]], // 初始化编辑数据到表单
+      title: [this.currentUser, [Validators.required]], // 初始化编辑数据到表单
       number: [null, [Validators.required]],
       desc: [null],
       teacher: [null, [Validators.required]],
@@ -48,7 +51,6 @@ export class AddSchoolComponent implements OnInit {
       end_time: [null],
       }); // 初始化表单
     }
-
   }
   submitUser(){
     this.userForm.markAllAsTouched();

@@ -1,9 +1,9 @@
 import { HttpHeaders } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
-import { NavigationExtras, Router } from '@angular/router';
+import { Component, Input, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { NzModalService } from 'ng-zorro-antd/modal';
-import { ApiService } from 'src/app/services/api.service';
+import { NzModalRef, NzModalService } from 'ng-zorro-antd/modal';
+import { ApiService} from 'src/app/services/api.service';
 import { NavigateService } from 'src/app/services/navigate.service';
 import { StorageService } from 'src/app/services/storage.service';
 
@@ -13,66 +13,61 @@ import { StorageService } from 'src/app/services/storage.service';
   styleUrls: ['./my-list.component.less']
 })
 export class MyListComponent implements OnInit {
-  _extras: any;
-  loading: boolean;
-  schoolList = [];
-
+  userForm: FormGroup ;
+  editData: any;
+  isEdit: boolean; // 接收传递的标识
   constructor(
-    private router: Router,
+    private fb: FormBuilder,
+    private nzModalService: NzModalService,
     private apiService: ApiService,
     private storageService: StorageService,
+    private modalRef: NzModalRef,
     private $message: NzMessageService,
-    private nzModalService:NzModalService,
     private navigateService: NavigateService
-  ) {
-    const extras = this.router.getCurrentNavigation().extras as any;
-    if (extras) {
-      this._extras = extras;
-    };
-    console.log(extras);
-    
-   }
+  ) { }
 
   ngOnInit(): void {
-    
-    
+    if(this.isEdit){
+      this.userForm = this.fb.group({
+      title: [this.editData.title, [Validators.required]], // 初始化编辑数据到表单
+      number: [this.editData.number, [Validators.required]],
+      desc: [this.editData.desc],
+      teacher: [this.editData.teacher, [Validators.required]],
+      sex: [this.editData.sex, [Validators.required]],
+      contact: [this.editData.contact, [Validators.required]],
+      end_time: [this.editData.end_time],
+    });
+    }else {
+      this.userForm = this.fb.group({
+      title: [null, [Validators.required]], // 初始化编辑数据到表单
+      number: [null, [Validators.required]],
+      desc: [null],
+      teacher: [null, [Validators.required]],
+        sex: [null, [Validators.required]],
+      contact: [null],
+      end_time: [null],
+      }); // 初始化表单
+    }
   }
-  onQueryParamsChange(params: { pageSize: number; pageIndex: number; }) {
-    const { pageSize, pageIndex } = params;
-    let start = (pageIndex - 1) * pageSize;
-    let count = pageSize;
-    this.loadSchool()
-  }
-  loadSchool(url?) {
-    this.loading = true;
-    url = url ? url : `/intentionList`
-    this.apiService.get(url, { headers: new HttpHeaders().set('token', this.storageService.getItem('token')) }).subscribe((res: any) => {
-      this.loading = false;
-      console.log(res);
-      const { code, data } = res;
-      if (data && Array.isArray(res.data)) {
-        this.schoolList = res.data;
-       
-      } else {
-        this.schoolList = []
-       
-      }
-    }, () => { this.loading = false; });
-  }
-  toDelete(data){
-    this.apiService.post('delIntention', { id: data.id }).subscribe((res: any) => {
+  submitUser(){
+    this.userForm.markAllAsTouched();
+    //if (!this.userForm.valid) {return;}
+    let params = this.userForm.value;
+    let url = 'addSchool';
+    if (this.isEdit) {
+      url = 'updateSchool';
+      params.id = this.editData.id;
+    }
+    this.apiService.post( url, params ).subscribe((res: any) => {
       console.log(res);
       const { code, msg } = res;
       if (code === 0) {
-        this.$message.success('删除成功！')
-        this.loadSchool()
+        this.$message.success('添加成功！');
+        this.modalRef.destroy('success');
       } else {
-        this.$message.error(msg)
+       this.$message.error(msg);
       }
     });
-  }
-  backTo(){
-    this.navigateService.navigate('layout/comments');
   }
 
 }

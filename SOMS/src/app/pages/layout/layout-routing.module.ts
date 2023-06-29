@@ -11,7 +11,6 @@ const routes: Routes = [
         path: 'comments',
         loadChildren: () => import('./comments/comments.module').then(m => m.CommentsModule),
         data: {
-          breadcrumbI18nKey: '学校列表'
         }
       },
       {

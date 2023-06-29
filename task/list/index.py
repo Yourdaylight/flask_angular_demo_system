@@ -51,9 +51,11 @@ def school_list():
     name = request.args.get("name", None)
     if name not in (None, ""):
         schoolList = schoolList.filter(Student.title.contains(name))
-    classNum = request.args.get("start_score", None)
-    if classNum not in (None, ""):
-        schoolList = schoolList.filter(Student.number.contains(classNum))
+    desc = request.args.get("desc", None)
+    if desc not in (None, ""):
+        schoolList = schoolList.filter(Student.desc.contains(desc))
+    # 根据时间降序排列
+    schoolList = schoolList.order_by(Student.create_time.desc())
     content = {"code": 0, "msg": "SUCCESS", "data": [school.instance_to_json() for school in schoolList.all()]}
     return json.dumps(content)
 
@@ -64,8 +66,9 @@ def add_school():
     number = request.json.get('number')
     desc = request.json.get('desc')
     score = request.json.get('score')
-    end_time = request.json.get('end_time')
-    end_time = datetime.strptime(end_time, '%Y-%m-%d')
+    # 获取当前时间
+    now = time.strftime('%y-%m-%d %H:%M:%S', time.localtime(time.time()))
+    end_time = now
     teacher = request.json.get('teacher')
     contact = request.json.get('contact')
     sex = request.json.get('sex')

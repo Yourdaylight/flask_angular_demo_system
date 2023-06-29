@@ -1,14 +1,14 @@
 <form nz-form [nzLayout]="'inline'" class="margin-bottom">
     <nz-form-item>
-        <nz-form-label>{{'学生姓名' | translate}}</nz-form-label>
+        <nz-form-label>{{'发布者' | translate}}</nz-form-label>
         <nz-form-control>
             <input name="name" [(ngModel)]="name" nz-input type="text" />
         </nz-form-control>
     </nz-form-item>
     <nz-form-item>
-        <nz-form-label>{{'班级编号' }}</nz-form-label>
+        <nz-form-label>{{'搜索内容' }}</nz-form-label>
         <nz-form-control>
-            <input name="start_score" [(ngModel)]="classNum" nz-input type="number" />
+            <input name="desc" [(ngModel)]="desc" nz-input type="text" />
         </nz-form-control>
     </nz-form-item>
 
@@ -17,55 +17,29 @@
             <button debounceClick (debounceClick)="searchUser()" nz-button nzType="primary" class="mr-8">
                 {{'搜索'}}
             </button>
-            <button nz-button nzType="warning" (click)="clearField()">{{'CLEAR' | translate}}</button>
+          <button debounceClick (debounceClick)="searchMine()" nz-button nzType="dashed" class="mr-8">
+                {{'我发布的'}}
+            </button>
+            <button nz-button nzType="danger" (click)="clearField()">{{'清除'}}</button>
         </nz-form-control>
     </nz-form-item>
 </form>
+
+
 <div class="toolbar">
-    <div class="title"><i nz-icon nzType="table" nzTheme="outline"></i>{{'高校列表' | translate}}</div>
+    <div class="title"><i nz-icon nzType="message" nzTheme="outline"></i>{{'论坛信息' | translate}}</div>
     <div class="toolbar-btns">
-        <button nz-button nzType="default" *ngIf="role == 1" (click)="addUser()"><i nz-icon nzType="plus" nzTheme="outline"></i>{{'增加'}}</button>
-        <button nz-button nzType="default" *ngIf="role != 1" (click)="toDetail()"><i nz-icon nzType="table" nzTheme="outline"></i>{{'我的意向' | translate}}</button>
+        <button nz-button nzType="primary" (click)="addUser()"><i nz-icon nzType="plus" nzTheme="outline"></i>{{'发布消息'}}</button>
     </div>
 </div>
-<nz-table nzShowSizeChanger nzBordered [nzScroll]="{ x: '100%' }" [nzData]="siteList"
-    [nzFrontPagination]="false" nzPaginationType="small" [nzLoading]="loading" [nzTotal]="total"
- (nzQueryParams)="onQueryParamsChange($event)">
-    <thead>
-        <tr>
-            <th nzColumnKey="id" nzWidth="60px">{{'ID' | translate}}</th>
-            <th nzColumnKey="username" nzWidth="100px">{{'班级编号' | translate}}</th>
-            <th nzColumnKey="password" nzWidth="140px">{{'学生姓名' |translate}}</th>
-            <th nzColumnKey="sex" nzWidth="140px">{{'性别' |translate}}</th>
 
-            <th nzColumnKey="name" nzWidth="80px">{{'班主任' | translate}}</th>
-            <th nzColumnKey="intro" nzWidth="180px">{{'家庭住址' | translate}}</th>
-            <th nzColumnKey="contact" nzWidth="80px">{{'家长联系方式' | translate}}</th>
-            <th nzColumnkey="role" nzWidth="120px">{{'创建时间' |translate}}</th>
-            <th nzWidth="150px">{{'OPERATE' |translate}}</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr *ngFor="let data of siteList">
-            <td class="overflow" [title]="data.id">{{ data.id }}</td>
-            <td class="overflow" [title]="data.number">{{ data.number }}</td>
-            <td><span>{{data.title}}</span></td>
-            <td><span>{{data.sex}}</span></td>
-            <td><span>{{data.teacher}}</span></td>
-            <td class="overflow">
-                <span [title]="data.desc">{{data.desc}}</span>
-            </td>
-            <td>
-                <span>{{data.contact}}</span>
-            </td>
-            <td class="overflow">
-                <span [title]="data.end_time">{{data.end_time}}</span>
-            </td>
-            <td class="">
-                <!-- <a (click)='toDetail(data)'>{{'查看详细' | translate}} </a>&nbsp;&nbsp; -->
-                <a *ngIf="role == 1" (click)='toEdit(data)'>{{'编辑✒' }} </a>&nbsp;&nbsp;
-                <a *ngIf="role == 1" (click)='toDelete(data)'>{{'删除❌'}} </a>
-            </td>
-        </tr>
-    </tbody>
-</nz-table>
+<div class="card-container" *ngFor="let data of siteList">
+    <nz-card [nzTitle]="'发布者: ' + data.title" [nzExtra]="data.end_time" nzHoverable style="margin: 15px 0; box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);">
+        <p>{{data.desc}}</p>
+        <div class="card-footer">
+            <a (click)="toEdit(data)">{{'查看💻'}}</a>&nbsp;&nbsp;
+            <a *ngIf="data.title==this.storageService.getItem('username')" (click)="toDelete(data)">{{'删除❌'}}</a>
+        </div>
+    </nz-card>
+</div>
+

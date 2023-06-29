@@ -19,10 +19,11 @@ export class CommentsComponent implements OnInit {
   pageIndex = 1;
   total = 1;
   loading: boolean;
-  name: string = '';
+  name = '';
   classNum: number;
-  end_score: number;
-  role:number;
+  desc = '';
+  private role: number;
+
   constructor(
     private nzModalService: NzModalService,
     private apiService: ApiService,
@@ -30,18 +31,16 @@ export class CommentsComponent implements OnInit {
     private translateService: TranslateService,
     private $message: NzMessageService,
     private navigateService: NavigateService
-  ) { 
+  ) {
     const storageRole = this.storageService.getItem('role') || '';
     if(storageRole) {
-      this.role =  parseInt(storageRole) || 2
+      this.role =  1;
     }
-    
+
   }
 
   ngOnInit(): void {
-    // /instructor/list   get   获取辅导员列表。请求头带token
-    // /comment/list  get 获取评论列表。（如果是学生要带上辅导员id。 ?id=   辅导员的话就不用带） 请求头要带token
-
+    this.loadSchool();
   }
   onQueryParamsChange(params: { pageSize: number; pageIndex: number; }) {
     const { pageSize, pageIndex } = params;
@@ -49,11 +48,11 @@ export class CommentsComponent implements OnInit {
     let count = pageSize;
     this.pageSize = pageSize;
     this.pageIndex = pageIndex;
-    this.loadSchool()
+    this.loadSchool();
   }
   loadSchool(url?) {
     this.loading = true;
-    url = url ? url : `schoolList`
+    url = url ? url : `schoolList`;
     this.apiService.get(url, { headers: new HttpHeaders().set('token', this.storageService.getItem('token')) }).subscribe((res: any) => {
       this.loading = false;
       console.log(res);
@@ -62,7 +61,7 @@ export class CommentsComponent implements OnInit {
         this.siteList = res.data;
         this.total = res.total;
       } else {
-        this.siteList = []
+        this.siteList = [];
         this.total = 0;
       }
     }, () => { this.loading = false; });
@@ -71,13 +70,16 @@ export class CommentsComponent implements OnInit {
     this.navigateService.navigate('layout/teacher', data);
   }
   searchUser() {
-    let url = `schoolList?name=${this.name}&start_score=${this.classNum || ''}&end_score=${this.end_score || ''}`
+    let url = `schoolList?name=${this.name}&desc=${this.desc|| ''}&end_score=''`;
+    this.loadSchool(url);
+  }
+  searchMine() {
+    let url = `schoolList?name=${this.storageService.getItem('username')}&start_score=${this.classNum || ''}&end_score=''`;
     this.loadSchool(url);
   }
   clearField() {
     this.name = '';
     this.classNum = null;
-    this.end_score = null;
     this.loadSchool();
   }
   addUser() {
@@ -87,17 +89,17 @@ export class CommentsComponent implements OnInit {
       nzContent: AddSchoolComponent,
       nzFooter: null,
       nzWidth: '60%',
-    })
+    });
     modal.afterClose.subscribe(res => {
       if (res) {
         this.loadSchool();
       }
-    })
+    });
   }
   // 在上个界面的组件中
 toEdit(data: any): void {
   const modal = this.nzModalService.create({
-    nzTitle: '编辑数据',
+    nzTitle: '编辑/查看动态',
     nzContent: AddSchoolComponent, // 当前界面的组件
     nzComponentParams: {
       editData: data, // 传递编辑的数据
@@ -112,10 +114,10 @@ toEdit(data: any): void {
       console.log(res);
       const { code, msg } = res;
       if (code === 0) {
-        this.$message.success('删除成功！')
-        this.loadSchool()
+        this.$message.success('删除成功！');
+        this.loadSchool();
       } else {
-        this.$message.error(msg)
+        this.$message.error(msg);
       }
     });
   }
@@ -127,15 +129,14 @@ toEdit(data: any): void {
 
     //delIntention post 删除意向学校
     this.navigateService.navigate('layout/myList',data);
-    return
     this.apiService.post('removeSchool', { sid: data.id }).subscribe((res: any) => {
       console.log(res);
       const { code, msg } = res;
       if (code === 0) {
-        this.$message.success('删除成功！')
-        this.loadSchool()
+        this.$message.success('删除成功！');
+        this.loadSchool();
       } else {
-        this.$message.error(msg)
+        this.$message.error(msg);
       }
     });
   }
@@ -144,10 +145,10 @@ toEdit(data: any): void {
       console.log(res);
       const { code, msg } = res;
       if (code === 0) {
-        this.$message.success('添加意向成功！')
-        this.loadSchool()
+        this.$message.success('添加意向成功！');
+        this.loadSchool();
       } else {
-        this.$message.error(msg)
+        this.$message.error(msg);
       }
     });
   }
