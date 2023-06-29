@@ -27,7 +27,8 @@ export class AddSchoolComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.userForm = this.fb.group({
+    if(this.isEdit){
+      this.userForm = this.fb.group({
       title: [this.editData.title, [Validators.required]], // 初始化编辑数据到表单
       number: [this.editData.number, [Validators.required]],
       desc: [this.editData.desc],
@@ -35,8 +36,19 @@ export class AddSchoolComponent implements OnInit {
       sex: [this.editData.sex, [Validators.required]],
       contact: [this.editData.contact, [Validators.required]],
       end_time: [this.editData.end_time],
-
     });
+    }else {
+      this.userForm = this.fb.group({
+      title: [null, [Validators.required]], // 初始化编辑数据到表单
+      number: [null, [Validators.required]],
+      desc: [null],
+      teacher: [null, [Validators.required]],
+        sex: [null, [Validators.required]],
+      contact: [null],
+      end_time: [null],
+      }); // 初始化表单
+    }
+
   }
   submitUser(){
     this.userForm.markAllAsTouched();
